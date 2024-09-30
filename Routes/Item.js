@@ -6,7 +6,6 @@ const router = express.Router();
 // Route to create a new item
 router.post('/items', itemController.createItem);
 router.get('/items/:id', itemController.getItemsForUser); 
-// Route to get all items
 router.get('/items', itemController.getAllItems);
 router.put('/items/:id', itemController.updateItem)
 

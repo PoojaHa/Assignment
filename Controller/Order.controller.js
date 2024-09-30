@@ -1,84 +1,129 @@
-
 const Order = require('../Models/Order.models');
 const Item = require('../Models/Item.models');
-
+const User = require('../Models/Customer.models');
+let ordersInMemory = []; // Store orders in memory
 // Create a new order
 exports.createOrder = async (req, res) => {
   try {
-    const { userId, items } = req.body; // Expecting userId and array of item IDs
-    console.log("Creating order for user:", userId, "with items:", items); // Log for debugging
+    const { name, email, deliveryAddress, items } = req.body;
+    // Find or create the user
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({ name, email, deliveryAddress });
+      await user.save();
+    }
+    const totalAmount = await calculateTotalAmount(items);
 
-    const totalAmount = await calculateTotalAmount(items); // Calculate total amount
+    const deliveryTime = assignDeliveryTime();
+    const order = new Order({
+      user: user._id,
+      items,
+      totalAmount,
+      deliveryTime,
+      deliveryAddress,
+    });
+    await order.save();
 
-    const order = new Order({ user: userId, items, totalAmount }); // Create new order
-    await order.save(); // Save to DB
-
-    res.status(201).json(order); // Return created order
+    res.status(201).json({
+      message: "Order placed successfully",
+      order,
+      deliveryDetails: { deliveryTime }
+    });
   } catch (error) {
-    console.error("Error creating order:", error); // Log the error for debugging
-    res.status(400).json({ message: 'Failed to create order', error: error.message });
+    res.status(400).json({ message: 'Failed to place order', error: error.message });
   }
 };
 
-// Function to calculate total amount
 const calculateTotalAmount = async (itemIds) => {
-  const items = await Item.find({ _id: { $in: itemIds } }); // Fetch all items
-  console.log("Fetched items for total calculation:", items); // Log fetched items for debugging
-
+  const items = await Item.find({ _id: { $in: itemIds } });
   if (items.length === 0) {
     throw new Error("No valid items found for the provided item IDs.");
   }
 
-  return items.reduce((total, item) => total + (item.price * item.quantity), 0); // Calculate total
+  return items.reduce((total, item) => total + (item.price * item.quantity), 0);
 };
 
+// Function to assign a delivery time (e.g., 1 hour from now)
+const assignDeliveryTime = () => {
+  const now = new Date();
+  return new Date(now.getTime() + 60 * 60 * 1000);
+};
 
-// Get all orders for a specific user
-exports.getOrdersByUserId = async (req, res) => {
+// Get orders by email
+exports.getOrdersByEmail = async (req, res) => {
+  const { email } = req.params;
   try {
-    const orders = await Order.find({ user: req.params.userId }).populate('items');
-    if (!orders.length) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    const userOrders = await Order.find({ user: user._id }).populate('items');
+    if (!userOrders.length) {
       return res.status(404).json({ message: 'No orders found for this user' });
     }
-    res.status(200).json(orders); // Return orders
+
+    res.status(200).json(userOrders);
   } catch (error) {
-    res.status(400).json({ message: 'Error fetching orders', error });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
-
-
-exports.modifyOrder = async (req, res) => {
-  const { orderId } = req.params; // Extract orderId from the URL
-  const updates = req.body; // Get updates from the request body
-
-  try {
-    const order = await Order.findByIdAndUpdate(orderId, updates, {
-      new: true, // Return the updated document
-      runValidators: true // Validate the updated fields
-    }).populate('items.itemId'); // Populate item details
-
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
-    res.status(200).json(order); // Return the updated order
-  } catch (error) {
-    res.status(400).json({ message: 'Failed to update order', error });
-  }
-};
-
-
-
-
+// Get all orders
 exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('items.itemId'); // Populate item details
-    if (!orders.length) {
+    const allOrders = await Order.find().populate('items');
+    if (!allOrders.length) {
       return res.status(404).json({ message: 'No orders found' });
     }
-    res.status(200).json(orders); // Return all orders
+    res.status(200).json(allOrders);
   } catch (error) {
     res.status(400).json({ message: 'Error fetching orders', error });
+  }
+};
+
+
+exports.cancelOrder = async (req, res) => {
+  const { email, orderId } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const order = await Order.findOneAndDelete({ _id: orderId, user: user._id });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found or not associated with this user' });
+    }
+
+    res.status(200).json({ message: 'Order canceled successfully' });
+  } catch (error) {
+    res.status(400).json({ message: 'Failed to cancel order', error });
+  }
+};
+
+
+exports.modifyDeliveryAddress = async (req, res) => {
+  const { email, orderId, newDeliveryAddress } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const order = await Order.findOneAndUpdate(
+      { _id: orderId, user: user._id },
+      { deliveryAddress: newDeliveryAddress },
+  
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found or not associated with this user' });
+    }
+
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(400).json({ message: 'Failed to modify delivery address', error });
   }
 };

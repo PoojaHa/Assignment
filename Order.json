@@ -1,0 +1,87 @@
+{
+    "message": "Order placed successfully",
+    "order": {
+        "user": "66fa52b12513bef740677edb",
+        "items": [
+            "66fa4fd12513bef740677ec4",
+            "66fa4fdd2513bef740677ec7"
+        ],
+        "totalAmount": 25.98,
+        "orderStatus": "Pending",
+        "deliveryTime": "2024-09-30T08:32:47.791Z",
+        "deliveryAddress": {
+            "street": "123 Main St",
+            "city": "Anytown",
+            "state": "CA",
+            "zipCode": "90210"
+        },
+        "_id": "66fa541f2513bef740677ee8",
+        "createdAt": "2024-09-30T07:32:47.796Z",
+        "updatedAt": "2024-09-30T07:32:47.796Z",
+        "__v": 0
+    },
+    "deliveryDetails": {
+        "deliveryTime": "2024-09-30T08:32:47.791Z"
+    }
+}
+[
+    {
+        "deliveryAddress": {
+            "street": "123 Main St",
+            "city": "Anytown",
+            "state": "CA",
+            "zipCode": "90210"
+        },
+        "_id": "66fa541f2513bef740677ee8",
+        "user": "66fa52b12513bef740677edb",
+        "items": [
+            {
+                "_id": "66fa4fd12513bef740677ec4",
+                "name": "dell",
+                "price": 12.99,
+                "quantity": 1,
+                "userId": "66fa4ecf2513bef740677ebc",
+                "__v": 0
+            },
+            {
+                "_id": "66fa4fdd2513bef740677ec7",
+                "name": "laptop",
+                "price": 12.99,
+                "quantity": 1,
+                "userId": "66fa4ecf2513bef740677ebc",
+                "__v": 0
+            }
+        ],
+        "totalAmount": 25.98,
+        "orderStatus": "Pending",
+        "deliveryTime": "2024-09-30T08:32:47.791Z",
+        "createdAt": "2024-09-30T07:32:47.796Z",
+        "updatedAt": "2024-09-30T07:32:47.796Z",
+        "__v": 0
+    }
+]
+// {
+//     "name": "John Doe", // User's name
+//     "email": "johndoe@example.com", // User's email
+//     "deliveryAddress": {
+//       "street": "123 Main St",
+//       "city": "Anytown",
+//       "state": "CA",
+//       "zipCode": "90210"
+//     },
+//     "items": [
+//       "66fa4fd12513bef740677ec4", // Item ID for "dell"
+//       "66fa4fdd2513bef740677ec7"  // Item ID for "laptop"
+//     ]
+//   }
+//put
+// {
+//     "email": "johndoe@example.com", // User's email
+//     "orderId": "66fa541f2513bef740677ee8", // The ID of the order to be modified
+//     "newDeliveryAddress": {
+//       "street": "456 New St", // New street address
+//       "city": "Newtown", // New city
+//       "state": "NY", // New state
+//       "zipCode": "12345" // New zip code
+//     }
+//   }

@@ -1,0 +1,51 @@
+[
+ 
+    {
+        "deliveryAddress": {
+            "street": "123 Main St",
+            "city": "New York",
+            "state": "NY",
+            "zipCode": "10001"
+        },
+        "_id": "66f9d0a050083d145a81989d",  
+        "name": "shilpa",
+        "email": "shilpa@example.com",
+        "items": [                           
+            {
+                "_id": "66f9d1adc1bfcbde3fbaaca3",
+                "name": "Test Item",
+                "price": 20,
+                "quantity": 1,
+                "userId": "66f9d0a050083d145a81989d",
+                "__v": 0
+            },
+            {
+                "_id": "66f9d1b5c1bfcbde3fbaaca6",
+                "name": "bag",
+                "price": 20,
+                "quantity": 1,
+                "userId": "66f9d0a050083d145a81989d",
+                "__v": 0
+            },
+            {
+                "_id": "66f9d1c6c1bfcbde3fbaaca9",
+                "name": "laptop",
+                "price": 20,
+                "quantity": 1,
+                "userId": "66f9d0a050083d145a81989d",
+                "__v": 0
+            },
+            {
+                "_id": "66f9d1d0c1bfcbde3fbaacac",
+                "name": "mobile",
+                "price": 20,
+                "quantity": 1,
+                "userId": "66f9d0a050083d145a81989d",
+                "__v": 0
+            }
+        ],
+        "createdAt": "2024-09-29T22:11:44.017Z",
+        "updatedAt": "2024-09-29T22:16:48.589Z",
+        "__v": 0
+    }
+]
