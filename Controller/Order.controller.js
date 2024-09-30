@@ -23,6 +23,7 @@ exports.createOrder = async (req, res) => {
       deliveryAddress,
     });
     await order.save();
+    ordersInMemory.push(order);
 
     res.status(201).json({
       message: "Order placed successfully",

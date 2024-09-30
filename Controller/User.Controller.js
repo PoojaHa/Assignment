@@ -11,7 +11,6 @@ exports.createUser = async (req, res) => {
 
     // Store the created user in memory as well
     usersInMemory[user._id] = user;
-    console.log(usersInMemory)
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ message: 'Failed to create user', error });
